@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ad Astra UC3M — Git Onboarding</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:          #080c14;
+      --bg-card:     #0d1422;
+      --bg-code:     #060a10;
+      --border:      #1e2d47;
+      --accent:      #3b82f6;
+      --accent-2:    #60a5fa;
+      --accent-glow: rgba(59,130,246,0.15);
+      --text:        #e2e8f0;
+      --text-muted:  #7a90b0;
+      --text-dim:    #3d5270;
+      --green:       #22c55e;
+      --yellow:      #f59e0b;
+      --red:         #ef4444;
+      --font-body:   'Space Grotesk', sans-serif;
+      --font-mono:   'Space Mono', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    #stars {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.5;
+    }
+
+    .wrapper { position: relative; z-index: 1; }
+
+    /* NAV */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(8,12,20,0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      height: 60px;
+    }
+    .nav-logo {
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+      text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 0.25rem; list-style: none; }
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      transition: color 0.2s, background 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); background: var(--accent-glow); }
+    .nav-links a.active { color: var(--accent); }
+
+    /* HERO */
+    .hero {
+      min-height: 88vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      border-radius: 100px;
+      padding: 0.3rem 1rem;
+      margin-bottom: 2rem;
+      letter-spacing: 0.1em;
+    }
+    .hero-badge::before {
+      content: '';
+      display: block;
+      width: 6px; height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+    }
+    .hero h1 span { color: var(--accent); }
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      max-width: 560px;
+      margin-bottom: 3rem;
+    }
+    .hero-cta { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-2); transform: translateY(-1px); }
+    .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* SECTIONS */
+    section {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 5rem 2rem;
+    }
+    section + section { border-top: 1px solid var(--border); }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+    h2 {
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+    h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 2rem 0 0.75rem;
+      color: var(--text);
+    }
+    p { color: var(--text-muted); margin-bottom: 1rem; }
+
+    /* STEPS */
+    .steps { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 2rem; }
+    .step { display: grid; grid-template-columns: 44px 1fr; gap: 1.25rem; align-items: start; }
+    .step-num {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      background: var(--accent-glow);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .step-content h3 { margin-top: 0.1rem; }
+
+    /* CODE */
+    pre, code { font-family: var(--font-mono); font-size: 0.82rem; }
+    .code-block {
+      background: var(--bg-code);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+    }
+    .code-block pre { color: var(--text); line-height: 1.8; }
+    .code-block .comment { color: var(--text-dim); }
+    .code-block .cmd { color: var(--accent-2); }
+    .code-block .flag { color: #a78bfa; }
+    .code-block .str { color: #34d399; }
+    .code-block-label {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--text-dim);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    /* CALLOUTS */
+    .callout {
+      display: flex;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      border-radius: 10px;
+      margin: 1.25rem 0;
+      border-left: 3px solid;
+    }
+    .callout-icon { font-size: 1rem; flex-shrink: 0; margin-top: 0.15rem; }
+    .callout p { margin: 0; font-size: 0.9rem; }
+    .callout.info    { background: rgba(59,130,246,0.07);  border-color: var(--accent); }
+    .callout.info    .callout-icon { color: var(--accent); }
+    .callout.warning { background: rgba(245,158,11,0.07);  border-color: var(--yellow); }
+    .callout.warning .callout-icon { color: var(--yellow); }
+    .callout.success { background: rgba(34,197,94,0.07);   border-color: var(--green); }
+    .callout.success .callout-icon { color: var(--green); }
+    .callout.danger  { background: rgba(239,68,68,0.07);   border-color: var(--red); }
+    .callout.danger  .callout-icon { color: var(--red); }
+
+    /* CARDS */
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      transition: border-color 0.2s;
+    }
+    .card:hover { border-color: var(--accent); }
+    .card h3 { margin: 0 0 0.4rem; font-size: 0.95rem; }
+    .card p { font-size: 0.85rem; margin: 0; }
+
+    /* TABLE */
+    .flow-table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; }
+    .flow-table th {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-align: left;
+      padding: 0.6rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .flow-table td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+      vertical-align: top;
+    }
+    .flow-table tr:last-child td { border-bottom: none; }
+    .flow-table td:first-child { font-family: var(--font-mono); color: var(--accent-2); font-size: 0.8rem; white-space: nowrap; }
+    .flow-table td:nth-child(2) { color: var(--text); }
+    .flow-table td:last-child { color: var(--text-muted); font-size: 0.85rem; }
+
+    /* TABS */
+    .tab-group { margin-top: 1.5rem; }
+    .tab-buttons { display: flex; gap: 0.25rem; border-bottom: 1px solid var(--border); margin-bottom: 1.25rem; }
+    .tab-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+      font-weight: 500;
+      padding: 0.6rem 1rem;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      text-align: center;
+      padding: 2.5rem 2rem;
+      color: var(--text-dim);
+      font-size: 0.82rem;
+      font-family: var(--font-mono);
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+
+    .scroll-indicator {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2px;
+      background: var(--accent);
+      z-index: 200;
+      transition: width 0.1s;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="stars"></canvas>
+<div class="scroll-indicator" id="scrollBar"></div>
+
+<div class="wrapper">
+
+  <nav>
+    <a class="nav-logo" href="#">AD ASTRA UC3M</a>
+    <ul class="nav-links">
+      <li><a href="#install">Git Install</a></li>
+      <li><a href="#setup">MATLAB Setup</a></li>
+      <li><a href="#workflow">Workflow</a></li>
+      <li><a href="#conflicts">Conflicts</a></li>
+      <li><a href="#troubleshoot">Troubleshoot</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-badge">ONBOARDING GUIDE — MODEL SATELLITE</div>
+    <h1>Git &amp; MATLAB<br><span>Version Control</span></h1>
+    <p>Everything you need to collaborate on the Ad Astra UC3M Model Satellite project — from first install to daily workflow.</p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="#install">Start Setup →</a>
+      <a class="btn btn-outline" href="#workflow">Jump to Workflow</a>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SECTION 1 — GIT INSTALLATION
+  ══════════════════════════════════════ -->
+  <section id="install">
+    <div class="section-label">Section 01</div>
+    <h2>Git Installation</h2>
+    <p>If you already have Git installed, skip to <a href="#setup" style="color:var(--accent)">Section 02</a>. To check, open a terminal and run <code>git --version</code>. If it prints a version number, you are good to go.</p>
+
+    <div class="tab-group">
+      <div class="tab-buttons">
+        <button class="tab-btn active" onclick="showTab(event,'win')">Windows</button>
+        <button class="tab-btn" onclick="showTab(event,'mac')">macOS</button>
+        <button class="tab-btn" onclick="showTab(event,'linux')">Linux</button>
+      </div>
+
+      <div class="tab-panel active" id="tab-win">
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">01</div>
+            <div class="step-content">
+              <h3>Download Git for Windows</h3>
+              <p>Get the installer from <a href="https://git-scm.com/download/win" style="color:var(--accent)" target="_blank">git-scm.com/download/win</a>.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">02</div>
+            <div class="step-content">
+              <h3>Run the installer — key options</h3>
+              <p>In <strong>Select Components</strong>, make sure these are checked:</p>
+              <ul style="color:var(--text-muted);font-size:0.9rem;margin:0.5rem 0 0.75rem 1.5rem;line-height:2.2">
+                <li><strong>Git LFS (Large File Support)</strong></li>
+                <li><strong>Associate .sh files to be run with Bash</strong></li>
+              </ul>
+              <p>In <strong>Adjusting your PATH</strong>, choose <strong>"Git from the command line and also from 3rd-party software"</strong> — this makes Git available system-wide so MATLAB can use it.</p>
+              <p>In <strong>Line ending conversions</strong>, choose <strong>"Checkout Windows-style, commit Unix-style line endings"</strong>.</p>
+              <p>In <strong>Choose a credential helper</strong>, select <strong>Git Credential Manager Core</strong>.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">03</div>
+            <div class="step-content">
+              <h3>Restart your computer</h3>
+              <p>Required for the PATH changes to take effect.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">04</div>
+            <div class="step-content">
+              <h3>Verify the installation</h3>
+              <div class="code-block">
+                <pre><span class="cmd">git</span> <span class="flag">--version</span>
+<span class="comment">→ git version 2.x.x.windows.x</span></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="tab-mac">
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">01</div>
+            <div class="step-content">
+              <h3>Option A — Homebrew (recommended)</h3>
+              <p>Install Homebrew from <a href="https://brew.sh" style="color:var(--accent)" target="_blank">brew.sh</a>, then:</p>
+              <div class="code-block"><pre><span class="cmd">brew install git</span></pre></div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">02</div>
+            <div class="step-content">
+              <h3>Option B — Xcode Command Line Tools</h3>
+              <p>Open Terminal and run <code>git --version</code>. If Git is not installed, macOS will prompt you to install Xcode Command Line Tools automatically.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="tab-linux">
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">01</div>
+            <div class="step-content">
+              <h3>Ubuntu / Debian</h3>
+              <div class="code-block"><pre><span class="cmd">sudo apt update</span>
+<span class="cmd">sudo apt install git</span></pre></div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">02</div>
+            <div class="step-content">
+              <h3>CentOS / RHEL / Fedora</h3>
+              <div class="code-block"><pre><span class="cmd">sudo dnf install git</span></pre></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       SECTION 2 — MATLAB SETUP
+  ══════════════════════════════════════ -->
+  <section id="setup">
+    <div class="section-label">Section 02</div>
+    <h2>MATLAB &amp; Git Setup</h2>
+    <p>These steps need to be done <strong>once per machine</strong>. Each team member must complete them on their own computer.</p>
+
+    <div class="card-grid">
+      <div class="card">
+        <h3>Register Binary Files</h3>
+        <p>Prevents Git from corrupting <code>.slx</code>, <code>.mlx</code>, <code>.mat</code> and other MATLAB files.</p>
+      </div>
+      <div class="card">
+        <h3>Long Path Support</h3>
+        <p>Removes Windows' 260-character path limit for Git.</p>
+      </div>
+      <div class="card">
+        <h3>Simulink Auto-Merge</h3>
+        <p>Lets MATLAB resolve conflicts in <code>.slx</code> model files automatically.</p>
+      </div>
+      <div class="card">
+        <h3>SSH Authentication</h3>
+        <p>No password prompts every time you push or pull.</p>
+      </div>
+    </div>
+
+    <hr />
+
+    <div class="steps">
+
+      <!-- STEP 1 -->
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-content">
+          <h3>Register Binary Files with Git</h3>
+          <p>In the <strong>MATLAB Command Window</strong>, run:</p>
+          <div class="code-block">
+            <pre><span class="cmd">copyfile</span>(fullfile(matlabroot,<span class="str">'toolbox'</span>,<span class="str">'shared'</span>,<span class="str">'cmlink'</span>,<span class="str">'git'</span>,<span class="str">'auxiliary_files'</span>, ...
+<span class="str">'mwgitattributes'</span>),fullfile(pwd,<span class="str">'.gitattributes'</span>))</pre>
+          </div>
+          <p>Verify it worked:</p>
+          <div class="code-block">
+            <pre><span class="cmd">type</span>(<span class="str">'.gitattributes'</span>)</pre>
+          </div>
+          <div class="callout success">
+            <div class="callout-icon">✓</div>
+            <p>You should see lines like <code>*.slx binary</code>, <code>*.mlx binary</code>, <code>*.mat binary</code>, <code>*.docx binary</code>, <code>*.xlsx binary</code>.</p>
+          </div>
+          <div class="callout info">
+            <div class="callout-icon">ℹ</div>
+            <p>This file lives in the repo. Once one person commits it, everyone who clones the repo gets it automatically.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-content">
+          <h3>Enable Long Path Support <span style="color:var(--text-muted);font-size:0.8rem;font-weight:400">(Windows only)</span></h3>
+          <p>Run this in the MATLAB Command Window:</p>
+          <div class="code-block">
+            <pre><span class="str">!git config --global core.longpaths true</span></pre>
+          </div>
+          <p>Verify:</p>
+          <div class="code-block">
+            <pre><span class="str">!git config --global core.longpaths</span>
+<span class="comment">→ true</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-content">
+          <h3>Configure Simulink Auto-Merge</h3>
+          <p>Tells Git which driver to use when it sees <code>merge=mlAutoMerge</code> in <code>.gitattributes</code>:</p>
+          <div class="code-block">
+            <pre><span class="str">!git config --global merge.mlAutoMerge.name "MATLAB Auto Merge"</span>
+<span class="str">!git config --global merge.mlAutoMerge.driver "mlAutoMerge.bat %O %A %B %P"</span></pre>
+          </div>
+          <p>Verify:</p>
+          <div class="code-block">
+            <pre><span class="str">!git config --global --list</span>
+<span class="comment">→ Look for: merge.mlautomerge.name and merge.mlautomerge.driver</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 4 -->
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-content">
+          <h3>Set Your Git Identity</h3>
+          <p>Use the <strong>same email as your GitHub account</strong>:</p>
+          <div class="code-block">
+            <pre><span class="str">!git config --global user.name "Your Name"</span>
+<span class="str">!git config --global user.email "your@email.com"</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 5 -->
+      <div class="step">
+        <div class="step-num">05</div>
+        <div class="step-content">
+          <h3>Set Up SSH Authentication</h3>
+          <p>Allows you to push and pull without entering your password every time.</p>
+
+          <h3 style="margin-top:1.5rem">5a — Generate an SSH key</h3>
+          <p>Open <strong>Git Bash</strong> and run:</p>
+          <div class="code-block">
+            <pre><span class="cmd">ssh-keygen</span> <span class="flag">-t</span> ed25519 <span class="flag">-C</span> <span class="str">"your@email.com"</span></pre>
+          </div>
+          <p>Press Enter to accept the default save path. Leave the passphrase empty (press Enter twice).</p>
+
+          <h3>5b — Start the SSH Agent <span style="color:var(--text-muted);font-size:0.8rem;font-weight:400">(Windows — run once as Administrator)</span></h3>
+          <p>Open <strong>PowerShell as Administrator</strong>:</p>
+          <div class="code-block">
+            <pre><span class="cmd">Get-Service</span> ssh-agent | <span class="cmd">Set-Service</span> <span class="flag">-StartupType</span> Automatic
+<span class="cmd">Start-Service</span> ssh-agent
+<span class="cmd">ssh-add</span> C:\Users\<span class="str">YourName</span>\.ssh\id_ed25519</pre>
+          </div>
+          <div class="callout warning">
+            <div class="callout-icon">⚠</div>
+            <p>Replace <code>YourName</code> with your actual Windows username. The tilde (<code>~</code>) shortcut does not work in PowerShell — use the full path.</p>
+          </div>
+          <div class="callout info">
+            <div class="callout-icon">ℹ</div>
+            <p>Setting <code>StartupType Automatic</code> means the agent starts on boot — you only need to run this block once.</p>
+          </div>
+
+          <h3>5c — Add the public key to GitHub</h3>
+          <p>In Git Bash, copy the key content:</p>
+          <div class="code-block">
+            <pre><span class="cmd">cat</span> ~/.ssh/id_ed25519.pub</pre>
+          </div>
+          <p>Go to <strong>github.com → Settings → SSH and GPG keys → New SSH key</strong>, give it a descriptive name, and paste.</p>
+
+          <h3>5d — Test the connection</h3>
+          <div class="code-block">
+            <pre><span class="cmd">ssh</span> <span class="flag">-T</span> git@github.com
+<span class="comment">→ Hi username! You've successfully authenticated...</span></pre>
+          </div>
+          <p>If prompted about host authenticity, type <code>yes</code> and press Enter.</p>
+
+          <h3>5e — Enable SSH in MATLAB</h3>
+          <p><strong>Home → Settings → MATLAB → Source Control → Git → SSH</strong>: enable SSH and keep "Use SSH agent" checked.</p>
+
+          <h3>5f — Clone the repository</h3>
+          <div class="code-block">
+            <div class="code-block-label">MATLAB Command Window</div>
+            <pre><span class="cmd">gitclone</span>(<span class="str">"git@github.com:Ad-Astra-UC3M/model_satellite.git"</span>)</pre>
+          </div>
+          <div class="callout success">
+            <div class="callout-icon">✓</div>
+            <p>If it returns a <code>GitRepository</code> object with a <code>WorkingFolder</code> path, the setup is complete.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       SECTION 3 — DAILY WORKFLOW
+  ══════════════════════════════════════ -->
+  <section id="workflow">
+    <div class="section-label">Section 03</div>
+    <h2>Daily Workflow</h2>
+    <p>Use Git Bash or CMD as you normally would — MATLAB does not change any of that. The only difference is that you now use <strong>SSH URLs</strong> instead of HTTPS.</p>
+
+    <div class="callout info">
+      <div class="callout-icon">ℹ</div>
+      <p><strong>MATLAB vs terminal:</strong> Use the terminal for daily push, pull, and commit. Use MATLAB's Git UI only when you need to inspect diffs on <code>.slx</code> Simulink files — it understands the binary format and shows a visual comparison.</p>
+    </div>
+
+    <h3>Standard Daily Workflow</h3>
+    <div class="code-block">
+      <div class="code-block-label">Git Bash / CMD</div>
+      <pre><span class="comment"># 1. Fetch latest changes — safe, does not modify your files</span>
+<span class="cmd">git fetch</span> origin
+
+<span class="comment"># 2. Check your current branch and status</span>
+<span class="cmd">git status</span>
+
+<span class="comment"># 3. Update your feature branch with the latest main</span>
+<span class="cmd">git checkout</span> main
+<span class="cmd">git pull</span> origin main
+<span class="cmd">git checkout</span> your-feature-branch
+<span class="cmd">git rebase</span> main
+
+<span class="comment"># 4. Make your changes in MATLAB / Simulink</span>
+
+<span class="comment"># 5. Review what changed</span>
+<span class="cmd">git diff</span>
+
+<span class="comment"># 6. Stage and commit</span>
+<span class="cmd">git add</span> .
+<span class="cmd">git commit</span> <span class="flag">-m</span> <span class="str">"Add attitude control subsystem"</span>
+
+<span class="comment"># 7. Push to remote</span>
+<span class="cmd">git push</span></pre>
+    </div>
+
+    <h3>Branch Strategy</h3>
+    <p>Keep <code>main</code> always clean and functional. Each feature or subsystem gets its own branch.</p>
+    <div class="code-block">
+      <pre><span class="comment"># Create a new branch for your work</span>
+<span class="cmd">git checkout</span> <span class="flag">-b</span> <span class="str">feature/power-subsystem</span>
+
+<span class="comment"># Push it and set up remote tracking (first time only)</span>
+<span class="cmd">git push</span> <span class="flag">-u</span> origin feature/power-subsystem</pre>
+    </div>
+
+    <h3>Common Commands</h3>
+    <table class="flow-table">
+      <thead>
+        <tr>
+          <th>Command</th>
+          <th>What it does</th>
+          <th>When to use</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>git fetch</td>
+          <td>Download remote changes without merging</td>
+          <td>To see what others have done</td>
+        </tr>
+        <tr>
+          <td>git pull</td>
+          <td>Download and merge remote changes</td>
+          <td>When ready to incorporate remote changes</td>
+        </tr>
+        <tr>
+          <td>git status</td>
+          <td>Show modified, staged, and untracked files</td>
+          <td>Before every commit</td>
+        </tr>
+        <tr>
+          <td>git add .</td>
+          <td>Stage all changes</td>
+          <td>Before committing</td>
+        </tr>
+        <tr>
+          <td>git commit -m "..."</td>
+          <td>Save a snapshot locally</td>
+          <td>After completing a logical unit of work</td>
+        </tr>
+        <tr>
+          <td>git push</td>
+          <td>Upload commits to GitHub</td>
+          <td>To share your work with the team</td>
+        </tr>
+        <tr>
+          <td>git rebase main</td>
+          <td>Replay your commits on top of main</td>
+          <td>To keep your branch up to date</td>
+        </tr>
+        <tr>
+          <td>git log --oneline</td>
+          <td>See recent commit history</td>
+          <td>To review what has been done</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Commit Message Guidelines</h3>
+    <div class="code-block">
+      <pre><span class="comment"># Good — present tense, specific, capitalised</span>
+<span class="cmd">git commit</span> <span class="flag">-m</span> <span class="str">"Add PID controller for attitude stabilization"</span>
+<span class="cmd">git commit</span> <span class="flag">-m</span> <span class="str">"Fix sensor data parsing in telemetry module"</span>
+<span class="cmd">git commit</span> <span class="flag">-m</span> <span class="str">"Update .gitattributes for Simulink binary files"</span>
+
+<span class="comment"># Bad</span>
+<span class="cmd">git commit</span> <span class="flag">-m</span> <span class="str">"stuff"</span>
+<span class="cmd">git commit</span> <span class="flag">-m</span> <span class="str">"fixed it"</span></pre>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       SECTION 4 — MERGE CONFLICTS
+  ══════════════════════════════════════ -->
+  <section id="conflicts">
+    <div class="section-label">Section 04</div>
+    <h2>Merge Conflicts</h2>
+
+    <h3>Simulink Models (.slx)</h3>
+    <p>When two people edit the same <code>.slx</code> file, Git uses <code>mlAutoMerge</code> — configured in the setup — to resolve what it can automatically. For the rest:</p>
+    <ol style="color:var(--text-muted);font-size:0.9rem;margin:0.75rem 0 0.75rem 1.5rem;line-height:2.4">
+      <li>Open the conflicted model in MATLAB — the comparison tool will launch automatically.</li>
+      <li>Accept or reject changes block by block in the visual interface.</li>
+      <li>Save the file, then <code>git add</code> and commit.</li>
+    </ol>
+    <div class="callout danger">
+      <div class="callout-icon">⛔</div>
+      <p>Never try to resolve <code>.slx</code> conflicts manually in a text editor. The format is binary and your file will be corrupted.</p>
+    </div>
+
+    <h3>Rebasing</h3>
+    <p>We prefer <strong>rebase</strong> over merge to keep a clean, linear history. Rebase replays your commits on top of the latest main instead of creating a merge commit.</p>
+    <div class="code-block">
+      <pre><span class="comment"># Update your feature branch with latest main</span>
+<span class="cmd">git rebase</span> main
+
+<span class="comment"># If a conflict occurs during rebase:</span>
+<span class="comment"># 1. Fix the conflicted file</span>
+<span class="cmd">git add</span> conflicted-file.slx
+<span class="cmd">git rebase</span> <span class="flag">--continue</span>
+
+<span class="comment"># To abort and return to the state before the rebase:</span>
+<span class="cmd">git rebase</span> <span class="flag">--abort</span></pre>
+    </div>
+    <div class="callout warning">
+      <div class="callout-icon">⚠</div>
+      <p>Never rebase commits that have already been pushed and shared with others — it rewrites history and will cause problems for the rest of the team.</p>
+    </div>
+
+    <h3>Undoing Mistakes</h3>
+    <div class="code-block">
+      <pre><span class="comment"># Discard changes to a file before staging</span>
+<span class="cmd">git restore</span> filename.mlx
+
+<span class="comment"># Unstage a file after git add, before commit</span>
+<span class="cmd">git restore</span> <span class="flag">--staged</span> filename.mlx
+
+<span class="comment"># Undo last commit but keep the changes in your working directory</span>
+<span class="cmd">git reset</span> <span class="flag">--soft</span> HEAD~1</pre>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       SECTION 5 — TROUBLESHOOTING
+  ══════════════════════════════════════ -->
+  <section id="troubleshoot">
+    <div class="section-label">Section 05</div>
+    <h2>Troubleshooting</h2>
+
+    <div class="steps">
+
+      <div class="step">
+        <div class="step-num" style="font-size:0.75rem">ERR</div>
+        <div class="step-content">
+          <h3>"Permission denied (publickey)"</h3>
+          <p>The SSH agent is not running. Open PowerShell as Administrator:</p>
+          <div class="code-block">
+            <pre><span class="cmd">Start-Service</span> ssh-agent
+<span class="cmd">ssh-add</span> C:\Users\<span class="str">YourName</span>\.ssh\id_ed25519</pre>
+          </div>
+          <p>If the service was never set to start automatically, repeat step 5b from <a href="#setup" style="color:var(--accent)">Section 02</a>.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num" style="font-size:0.75rem">ERR</div>
+        <div class="step-content">
+          <h3>"Unable to connect to SSH agent" (MATLAB)</h3>
+          <p>MATLAB cannot reach the SSH agent. Check that:</p>
+          <ul style="color:var(--text-muted);font-size:0.9rem;margin:0.5rem 0 0.5rem 1.5rem;line-height:2.2">
+            <li>The OpenSSH Agent service is running (see above).</li>
+            <li>In MATLAB: <strong>Settings → Source Control → Git → SSH</strong> — both "Enable SSH" and "Use SSH agent" are checked.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num" style="font-size:0.75rem">ERR</div>
+        <div class="step-content">
+          <h3>"Your branch is ahead of origin by X commits"</h3>
+          <div class="code-block"><pre><span class="cmd">git push</span></pre></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num" style="font-size:0.75rem">ERR</div>
+        <div class="step-content">
+          <h3>"Your branch is behind origin by X commits"</h3>
+          <div class="code-block"><pre><span class="cmd">git pull</span> origin main</pre></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num" style="font-size:0.75rem">ERR</div>
+        <div class="step-content">
+          <h3>Committed to the wrong branch</h3>
+          <div class="code-block">
+            <pre><span class="comment"># Move the last commit to the correct branch</span>
+<span class="cmd">git checkout</span> correct-branch
+<span class="cmd">git cherry-pick</span> wrong-branch
+
+<span class="comment"># Remove it from the wrong branch</span>
+<span class="cmd">git checkout</span> wrong-branch
+<span class="cmd">git reset</span> <span class="flag">--hard</span> HEAD~1</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num" style="font-size:0.75rem">HELP</div>
+        <div class="step-content">
+          <h3>Still stuck?</h3>
+          <ul style="color:var(--text-muted);font-size:0.9rem;margin:0.5rem 0 0.5rem 1.5rem;line-height:2.2">
+            <li>Ask in the Ad Astra group chat.</li>
+            <li>Official MATLAB docs: <a href="https://www.mathworks.com/help/matlab/source-control.html" style="color:var(--accent)" target="_blank">mathworks.com — Git Source Control</a></li>
+            <li>General Git reference: <a href="https://git-scm.com/doc" style="color:var(--accent)" target="_blank">git-scm.com/doc</a></li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer>
+    <p>AD ASTRA UC3M — Model Satellite Project</p>
+    <p style="margin-top:0.5rem">Git onboarding guide · Based on <a href="https://www.mathworks.com/help/matlab/matlab_prog/set-up-git-source-control.html" target="_blank">MathWorks R2025a documentation</a></p>
+  </footer>
+
+</div>
+
+<script>
+  /* STAR CANVAS */
+  const canvas = document.getElementById('stars');
+  const ctx = canvas.getContext('2d');
+  let stars = [];
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  function initStars() {
+    stars = [];
+    for (let i = 0; i < 180; i++) {
+      stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 1.2 + 0.2,
+        o: Math.random() * 0.6 + 0.1,
+        speed: Math.random() * 0.015 + 0.005
+      });
+    }
+  }
+  function drawStars() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    stars.forEach(s => {
+      s.o += Math.sin(Date.now() * s.speed * 0.01) * 0.003;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(148,190,255,${Math.max(0.05, Math.min(0.7, s.o))})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(drawStars);
+  }
+  window.addEventListener('resize', () => { resize(); initStars(); });
+  resize(); initStars(); drawStars();
+
+  /* SCROLL PROGRESS */
+  const bar = document.getElementById('scrollBar');
+  window.addEventListener('scroll', () => {
+    const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+    bar.style.width = pct + '%';
+  });
+
+  /* TABS */
+  function showTab(e, id) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    e.target.classList.add('active');
+    document.getElementById('tab-' + id).classList.add('active');
+  }
+
+  /* ACTIVE NAV */
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navLinks.forEach(l => l.classList.remove('active'));
+        const link = document.querySelector(`.nav-links a[href="#${entry.target.id}"]`);
+        if (link) link.classList.add('active');
+      }
+    });
+  }, { threshold: 0.3 });
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
