@@ -12,7 +12,7 @@ clear; clc; close all;
 %   Iyy  inercia en pitch                 [kg·m²]
 %   Izz  inercia en yaw                   [kg·m²]
 
-p.m   = 0.468;
+p.m   = 0.45;
 p.g   = 9.81;
 p.l   = 0.225;
 p.k   = 2.980e-6;
